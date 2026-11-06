@@ -8,6 +8,13 @@
       "when": 1793976554014,
       "tag": "0000_amusing_mandroid",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793976752323,
+      "tag": "0001_fluffy_the_leader",
+      "breakpoints": true
     }
   ]
 }

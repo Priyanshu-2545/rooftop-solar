@@ -12,7 +12,7 @@ Everything not in the problem statement. Change values in the place listed under
 | A6 | Generation = 1,400 units/kW/year, editable | `app_settings.units_per_kw_year` | settings row |
 | A7 | Flat blended tariff ₹8/unit for savings | `app_settings.tariff_rate_paise_per_unit` (800) | settings row |
 | A8 | Tariff escalation 0%/year for 25-year savings | settings | settings row |
-| A9 | Price table: ₹55,000/kW (standard) and ₹60,000/kW (premium) for 1–5 kW | `price_rules` seed | new dated rows |
+| A9 | Price table: ₹55,000/kW (standard) and ₹60,000/kW (premium), seeded for 1–10 kW | `price_rules` seed | new dated rows |
 | A10 | Non-residential customers get no subsidy unless a rule row exists | `computeSubsidy` | add rule row with customer_type |
 | A11 | Scoring thresholds: Low if tenant, bill < ₹1,000 or units < 100; High if owner, bill ≥ ₹2,500, units ≥ 250 and roof fits; else Medium | `lib/rules/score.ts` | edit constants |
 | A12 | Roof area needed ≈ 100 sq ft per kW | `requiredRoofArea` | constant |

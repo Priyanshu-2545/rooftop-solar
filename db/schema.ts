@@ -145,6 +145,7 @@ export const quotes = pgTable("quotes", {
   createdBy: uuid("created_by").notNull().references(() => users.id),
   sentAt: timestamp("sent_at", { withTimezone: true }),
   validUntil: timestamp("valid_until", { withTimezone: true }),
+  selectedOption: integer("selected_option"), // index into outputs.options, set on accept
   createdAt: at("created_at"),
 }, (t) => [index("quotes_lead").on(t.leadId)]);
 
