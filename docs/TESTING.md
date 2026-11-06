@@ -1,0 +1,43 @@
+# Testing
+
+## Strategy
+Pyramid: many Vitest unit tests on `lib/rules` and `lib/ai`; integration tests on auth/RBAC/quote snapshotting against a test DB; 3 Playwright E2E flows on a mobile viewport.
+
+## MUST be tested
+- **Subsidy:** 1 kW→₹30,000; 2→₹60,000; 3→₹78,000; 5→₹78,000 (cap); 0/negative/NaN rejected; half kW; non-residential; date before rule (no subsidy + warning); two rows by date incl. boundary (from inclusive, to exclusive); overlap/gap throws.
+- **Generation/payback:** 3 kW × 1,400 = 4,200; sample payback; zero savings; rounding; no float drift.
+- **kW from units:** 340→3, 85→1, tenant→none, boundaries.
+- **Scoring:** sample leads High / Low (tenant) / Low (small bill); boundaries; low confidence caps at Medium; low never "reject".
+- **Extraction adapter:** good/poor/ambiguous paths; malformed output rejected by Zod; unknown image → manual; implausible flagged.
+- **Auth:** OTP expiry, attempts, rate limit, reuse blocked.
+- **Access control:** IDOR (homeowner vs other's lead/quote/project); sales allowed; status token valid/revoked/unknown; public page leaks no PII.
+- **Snapshotting:** changing a rule after send doesn't change the sent quote.
+- **Validation:** bad phone, pincode, negative bill, oversized/forged file.
+- **E2E:** (1) sign in → lead → confirm bill → result; (2) sales quote → send → homeowner accepts → project; (3) stage move → message logged → public link updated.
+
+## Run
+`npm test` · `npm run test:cov` (rules coverage target ≥ 95%) · `npm run e2e` · `npm run lint` · `npm run typecheck`.
+
+## Fixtures
+`tests/fixtures/` holds rule rows and sample bills (fictional).
+
+## Manual QA per screen
+Each screen: loading, empty, error states; 360px width; keyboard only; screen reader labels; offline reload (form draft).
+
+## UX-laws QA checklist (walk through end of Day 2)
+- [ ] Hick: one primary action per screen
+- [ ] Fitts: ≥48px targets, sticky bottom bar
+- [ ] Jakob: OTP boxes, bottom nav
+- [ ] Miller: ≤5 fields/step
+- [ ] Doherty: no blank waits; staged extraction text
+- [ ] Proximity/Common region: bill image + fields together
+- [ ] Hierarchy: quote numerals first, one H1
+- [ ] Disclosure: details behind "How we calculated this"
+- [ ] Von Restorff: only one saffron action per screen
+- [ ] Peak-End: kind low-score and confirmation copy
+- [ ] Goal-gradient: arc progress visible
+- [ ] Postel: +91/spaces/commas/Devanagari digits accepted
+- [ ] Feedback: every action shows confirmation
+
+## Accessibility / performance checklist
+Contrast script passes; focus visible; `aria-live` on extraction; Lighthouse mobile ≥ 90 Perf/A11y on lead form and status page (record real numbers only).
