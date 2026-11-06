@@ -3,10 +3,14 @@ import postgres from "postgres";
 import * as schema from "./schema";
 import { env } from "@/lib/env";
 
-// One connection pool per server instance (reused across hot reloads in dev).
-const g = globalThis as unknown as { __sql?: ReturnType<typeof postgres> };
-const sql = g.__sql ?? postgres(env().DATABASE_URL, { max: 5, prepare: false });
-if (process.env.NODE_ENV !== "production") g.__sql = sql;
+export function createDb(url: string) {
+  return drizzle(postgres(url, { max: 5, prepare: false }), { schema });
+}
+export type Db = ReturnType<typeof createDb>;
 
-export const db = drizzle(sql, { schema });
-export type Db = typeof db;
+// One pool per server instance (kept on globalThis so dev hot reloads don't leak connections).
+const g = globalThis as unknown as { __db?: Db };
+export function getDb(): Db {
+  g.__db ??= createDb(env().DATABASE_URL);
+  return g.__db;
+}
