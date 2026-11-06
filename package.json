@@ -17,6 +17,7 @@
     "db:seed": "tsx db/seed.ts"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.9.0",
     "drizzle-orm": "^0.45.4",
     "jose": "^6.2.15",
     "next": "16.4.5",

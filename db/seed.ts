@@ -116,9 +116,9 @@ async function main() {
       consentAt: daysAgo(L.ago), consentTextVersion: "v1",
       status: L.status ?? (L.stage ? "won" : quoted ? "quoted" : "scored"),
       score: score.band === "high" ? 80 : score.band === "medium" ? 50 : 20, scoreBand: score.band, scoreReasons: score.reasons,
-      nextStep: score.nextStep, recommendedKw: kw === null ? null : String(kw), needsHumanCheck: score.needsHumanCheck,
+      nextStep: score.nextStep, recommendedKw: score.recommendedKw === null ? null : String(score.recommendedKw), needsHumanCheck: score.needsHumanCheck,
       idempotencyKey: `seed-${L.hid}`, createdAt: daysAgo(L.ago),
-    }).onConflictDoNothing();
+    }).onConflictDoUpdate({ target: s.leads.id, set: { recommendedKw: score.recommendedKw === null ? null : String(score.recommendedKw) } });
 
     if (L.billFile) {
       const img = bytes(L.billFile);
