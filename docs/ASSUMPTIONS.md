@@ -29,3 +29,4 @@ Everything not in the problem statement. Change values in the place listed under
 | A23 | Bill reading is simulated; maps seed sample images by hash to canned values | `lib/ai` | swap adapter |
 | A24 | Time zone Asia/Kolkata for all displayed dates; stored as UTC | everywhere | n/a |
 | A25 | MR/HI translations are machine-assisted drafts and need native review | I18N.md | native reviewer |
+| A26 | Medium score routes to a survey (a human checks first); only Low routes to a short call | `lib/rules/score.ts` | edit `scoreLead` |
