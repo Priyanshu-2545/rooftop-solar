@@ -6,10 +6,10 @@ Tick items as done. Each task: files, definition of done (DoD).
 - [x] Scaffold Next.js, tooling, env example. DoD: `tsc` passes.
 - [x] Docs set + skills + AGENTS/CLAUDE + settings. DoD: all docs in section 3 exist.
 - [x] CI workflow `.github/workflows/ci.yml` (lint, typecheck, test).
-- [ ] DB schema + migration + idempotent seed (3 sample leads first). Files: `db/*`. DoD: `db:seed` twice is safe.
+- [x] DB schema + migration + idempotent seed (3 sample leads first). Files: `db/*`. DoD: `db:seed` twice is safe.
 - [x] Rules engine, one commit per module: `effective.ts`, `subsidy.ts`, `generation.ts`/`payback.ts`, `size.ts`, `score.ts`, `money.ts`. DoD: all listed tests green, coverage ≥ 95%.
-- [ ] Auth: mock OTP, sessions, RBAC helpers + tests. DoD: expiry/attempts/reuse/IDOR tests green.
-- [ ] Lead form (stepped) + upload + `extractBill` simulated + bill review + score + result. DoD: happy path works locally.
+- [x] Auth: mock OTP, sessions, RBAC helpers + tests. DoD: expiry/attempts/reuse/IDOR tests green.
+- [x] Lead form (stepped) + upload + `extractBill` simulated + bill review + score + result. DoD: happy path works locally.
 
 ## Day 2 (7 Nov): flows
 - [ ] Sales inbox + lead detail.

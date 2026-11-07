@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Mukta } from "next/font/google";
-import { headers } from "next/headers";
 import { Shell } from "@/components/app/Shell";
 import { RegisterSw } from "@/components/app/RegisterSw";
 import { getUser } from "@/lib/auth/current";
@@ -20,12 +19,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: "#F6F1E7", width: "device-width", initialScale: 1 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [{ t, locale }, user, h] = await Promise.all([getT(), getUser(), headers()]);
-  const path = h.get("x-pathname") ?? "/";
+  const [{ t, locale }, user] = await Promise.all([getT(), getUser()]);
   return (
     <html lang={locale} className={`${display.variable} ${sans.variable}`}>
       <body>
-        <Shell user={user} t={t} locale={locale} path={path}>{children}</Shell>
+        <Shell user={user} t={t} locale={locale}>{children}</Shell>
         <RegisterSw />
       </body>
     </html>
