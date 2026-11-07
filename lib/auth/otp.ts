@@ -9,7 +9,7 @@ import { hit } from "./ratelimit";
 export const OTP_TTL_MS = 5 * 60 * 1000;
 export const MAX_ATTEMPTS = 5;
 const PHONE_LIMIT = 3; // OTP requests per phone per 10 min
-const IP_LIMIT = 10;
+const DEFAULT_IP_LIMIT = 10;
 
 const hashCode = (code: string, salt: string) => createHash("sha256").update(`${salt}:${code}`).digest("hex");
 
@@ -19,10 +19,10 @@ export type RequestResult =
 
 export async function requestOtp(
   db: Db,
-  p: { phone: string; ip: string; now: Date; demo: boolean; demoOtp: string },
+  p: { phone: string; ip: string; now: Date; demo: boolean; demoOtp: string; ipLimit?: number },
 ): Promise<RequestResult> {
   const okPhone = await hit(db, `otp:phone:${p.phone}`, PHONE_LIMIT, 600, p.now);
-  const okIp = await hit(db, `otp:ip:${p.ip}`, IP_LIMIT, 600, p.now);
+  const okIp = await hit(db, `otp:ip:${p.ip}`, p.ipLimit ?? DEFAULT_IP_LIMIT, 600, p.now);
   if (!okPhone || !okIp) return { ok: false, reason: "rate_limited" };
 
   const code = p.demo ? p.demoOtp : String(randomInt(0, 1_000_000)).padStart(6, "0");

@@ -5,6 +5,7 @@ const schema = z.object({
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 characters"),
   DEMO_MODE: z.enum(["true", "false"]).default("false"),
   DEMO_OTP: z.string().regex(/^\d{6}$/).default("123456"),
+  OTP_IP_LIMIT: z.coerce.number().int().min(1).max(10000).default(10), // OTP requests per IP per 10 min
   APP_ORIGIN: z.string().url().default("http://localhost:3000"),
 });
 

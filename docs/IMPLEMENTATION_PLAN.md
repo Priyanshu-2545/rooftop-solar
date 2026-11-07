@@ -21,7 +21,7 @@ Tick items as done. Each task: files, definition of done (DoD).
 - [ ] UX-laws QA walkthrough (TESTING.md checklist).
 
 ## Day 3 (8 Nov): polish, prove, ship
-- [ ] Loading/empty/error states everywhere; 360px pass; keyboard/a11y; anti-slop checklist.
+- [x] Loading/empty/error states everywhere; 360px pass; keyboard/a11y; anti-slop checklist.
 - [ ] Playwright E2E (3 flows); security checks (headers, IDOR, uploads); gitleaks; npm audit.
 - [ ] Lighthouse slow-3G run; fix budget (record real numbers only).
 - [ ] Deploy Vercel + Neon (Mumbai if available); env vars; seed prod; verify demo logins. **Needs user authorisation.**

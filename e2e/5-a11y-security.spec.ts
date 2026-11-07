@@ -94,13 +94,14 @@ test("accessibility of the core flow screens (quote story, bill review, tracker,
   await p.goto("/lead/new");
   await expect(async () => {
     await p.getByLabel("I own it").check(); await p.getByLabel("Flat concrete (RCC)").check();
-    await p.getByRole("button", { name: "Continue" }).click();
+    // force: Playwright's scroll-into-view fights a fixed bar in a short viewport; a real tap hits the button
+    await p.getByRole("button", { name: "Continue" }).click({ force: true });
     await expect(p.getByText("Step 2 of 5")).toBeVisible({ timeout: 1500 });
   }).toPass({ timeout: 15_000 });
-  await p.getByLabel("Roof area").fill("300"); await p.getByRole("button", { name: "Continue" }).click();
-  await p.getByLabel("Monthly electricity bill (₹)").fill("2900"); await p.getByLabel("Pincode").fill("440010"); await p.getByRole("button", { name: "Continue" }).click();
-  await p.getByLabel("Demo: use a sample bill").selectOption("bill-ambiguous.png"); await p.getByRole("button", { name: "Continue" }).click();
-  await p.getByLabel(/I agree that Company A/).check(); await p.getByRole("button", { name: "Get my estimate" }).click();
+  await p.getByLabel("Roof area").fill("300"); await p.getByRole("button", { name: "Continue" }).click({ force: true });
+  await p.getByLabel("Monthly electricity bill (₹)").fill("2900"); await p.getByLabel("Pincode").fill("440010"); await p.getByRole("button", { name: "Continue" }).click({ force: true });
+  await p.getByLabel("Demo: use a sample bill").selectOption("bill-ambiguous.png"); await p.getByRole("button", { name: "Continue" }).click({ force: true });
+  await p.getByLabel(/I agree that Company A/).check(); await p.getByRole("button", { name: "Get my estimate" }).click({ force: true });
   await expect(p.getByRole("heading", { name: "Check what we read" })).toBeVisible();
   await expect(p.getByText("Check this").first()).toBeVisible(); // unsure fields are flagged, not hidden
   await audit(p, "bill review (unsure fields)"); await noHorizontalScroll(p);

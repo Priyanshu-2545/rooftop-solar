@@ -28,7 +28,7 @@ export async function requestOtpAction(_prev: AuthState, formData: FormData): Pr
   const parsed = phoneSchema.safeParse({ phone: formData.get("phone") });
   const phone = parsed.success ? normalizePhone(parsed.data.phone) : null;
   if (!phone) return { step: "phone", error: "auth.badPhone" };
-  const r = await requestOtp(getDb(), { phone, ip: await clientIp(), now: new Date(), demo: isDemo(), demoOtp: env().DEMO_OTP });
+  const r = await requestOtp(getDb(), { phone, ip: await clientIp(), now: new Date(), demo: isDemo(), demoOtp: env().DEMO_OTP, ipLimit: env().OTP_IP_LIMIT });
   if (!r.ok) return { step: "phone", error: "auth.rateLimited" };
   return { step: "code", phone, demoCode: r.demoCode };
 }
