@@ -30,3 +30,10 @@ Everything not in the problem statement. Change values in the place listed under
 | A24 | Time zone Asia/Kolkata for all displayed dates; stored as UTC | everywhere | n/a |
 | A25 | MR/HI translations are machine-assisted drafts and need native review | I18N.md | native reviewer |
 | A26 | Medium score routes to a survey (a human checks first); only Low routes to a short call | `lib/rules/score.ts` | edit `scoreLead` |
+| A27 | Consumer numbers are 10–14 digits (spaces/dashes and Devanagari digits accepted on input) | `lib/ai/plausibility.ts`, `lib/leads/confirm.ts` | edit the regex |
+| A28 | Manual entry (nothing was read from the photo) counts as low confidence: band capped at Medium and flagged "needs human check" | `lib/leads/confirm.ts` | edit `resolveConfirmation` |
+| A29 | A bill ≥ ₹8,000/month or sanctioned load > 10 kW is a small-business connection: no residential subsidy | `inferCustomerType` | edit thresholds |
+| A30 | Units > 5,000/month or load > 100 kW are accepted but flagged for a human check (never a dead end) | `resolveConfirmation` | edit thresholds |
+| A31 | A homeowner's name is optional on the lead form; if absent, public pages greet with a plain "Hello" | `lib/leads/service.ts`, status page | n/a |
+| A32 | A reading is "sure" at confidence ≥ 0.85, otherwise "check this" | `lib/ai/plausibility.ts` | `SURE_THRESHOLD` |
+| A33 | Demo status-link tokens for two seeded projects are public on purpose (demo data only) | `db/seed.ts`, deployment.md | remove from seed for a real launch |
