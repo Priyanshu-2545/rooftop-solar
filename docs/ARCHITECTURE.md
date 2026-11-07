@@ -66,4 +66,4 @@ OTP (fixed code, logged), messages (`messages` rows with `mock_sent`), payments 
 Vercel (Next.js, Node runtime) → Neon Postgres. Region: Mumbai (ap-south-1) if offered, else flagged as a DPDP limit (SECURITY.md). Secrets via Vercel env vars.
 
 ## Performance budget (3G)
-Lead flow initial JS ≈ 100 KB gzip; fonts self-hosted WOFF2 subsets, 2 families; lead form route < 3 s on Slow 3G + 4× CPU (measured, recorded in TDD only after measuring); skeletons for lists; images downscaled server-side; service worker caches the shell.
+Lead flow initial JS target ≈ 100 KB gzip (measured: ~158 KB, mostly the React + Next runtime; see docs/LIGHTHOUSE.md); fonts self-hosted WOFF2 subsets, 2 families; lead form route < 3 s on Slow 3G + 4× CPU (measured, recorded in TDD only after measuring); skeletons for lists; images downscaled server-side; service worker caches the shell.

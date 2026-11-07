@@ -14,7 +14,7 @@
 
 Contrast (verify with a script before release): ink on paper ≥ 4.5:1; muted on paper ≥ 4.5:1; support on surface ≥ 4.5:1; warn on surface ≥ 4.5:1. **Saffron #C9741B with white text measures 3.50:1 (computed in `tests/contrast.test.ts`): only allowed for large/bold button text (≥ 18.66px bold, 3:1). Primary button label is 19px bold (above the 18.66px bold large-text line).** If a check fails, darken the accent rather than shrink the text.
 
-- **Type:** display serif (Fraunces) for headings and big numerals; humanist sans (Noto Sans / Mukta, covers Devanagari) for UI. Max 2 families, 2–3 weights, self-hosted WOFF2 subsets. Base 17–18px, line-height 1.5 (Devanagari ≥ 1.65). Tabular lining numerals for money. `Intl` `en-IN` grouping (₹1,25,000).
+- **Type (as built):** Fraunces is self-hosted as a static weight-400, optical-size-72 instance subset to Basic Latin + ₹ + the punctuation we use (11 KB; licence in `assets/fonts/`). Mukta (Latin + Devanagari) loads from `next/font`; its Devanagari file is only fetched when Devanagari text is on the page, and the language-switcher labels use the device font so English pages never need it. Original intent: display serif (Fraunces) for headings and big numerals; humanist sans (Noto Sans / Mukta, covers Devanagari) for UI. Max 2 families, 2–3 weights, self-hosted WOFF2 subsets. Base 17–18px, line-height 1.5 (Devanagari ≥ 1.65). Tabular lining numerals for money. `Intl` `en-IN` grouping (₹1,25,000).
 - **Spacing:** 8px grid. **Radius:** 6px everywhere. **Motion:** 150–200ms ease-out; respect `prefers-reduced-motion`. No gradients, glass, glows.
 - **Layout:** mobile-first single column, max 560px on phone flows, ~1100px sales desk.
 

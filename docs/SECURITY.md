@@ -37,7 +37,7 @@ Zod on every action/route input and on env; max lengths; strict objects (unknown
 JPEG/PNG/WebP (HEIC only if conversion is feasible; otherwise documented as unsupported). Max 5 MB. Magic-byte sniff, re-encode and downscale server-side. Never in `/public`.
 
 ## Rate limits
-In-memory/DB-backed windows per phone and IP for OTP and token pages. Known gap: in-memory limiter is per-instance on serverless; production should use a shared store.
+Database-backed fixed windows (table `rate_limits`), so limits hold across serverless instances: OTP requests per phone (3 / 10 min) and per IP (default 10 / 10 min, env `OTP_IP_LIMIT`), and the public status page per IP (30 / min). Known gap: no CAPTCHA or device signals; a shared-NAT office could hit the IP limit.
 
 ## Status-link token
 32 random bytes (base64url), only SHA-256 stored. Page shows first name, stage, timeline, next step, document names. Never consumer number or full address. `X-Robots-Tag: noindex`.
@@ -49,7 +49,7 @@ Consent captured with text version + timestamp. Minimisation: only fields in the
 Only in env. `.env.example` has names only. `.env*` git-ignored. Run `gitleaks` before each push and check `git log -p` for accidents.
 
 ## Dependency hygiene
-Lockfile committed; `npm audit` reviewed at release (current moderate findings are dev-tooling transitive minimatch via eslint; not shipped to runtime); no unused packages.
+Lockfile committed. `npm audit --omit=dev`: 0 vulnerabilities (checked 2026-11-07, also enforced in CI). The moderate findings in the full audit are dev tooling only (esbuild via drizzle-kit, minimatch via eslint) and are not shipped. gitleaks is clean on the full history and tree (config: `.gitleaks.toml`, runs in CI).
 
 ## Known gaps
-Mock OTP/payments; in-memory rate limiting; no real malware scan; bill images in DB for the demo; no MFA for sales.
+Mock OTP/payments; no CAPTCHA; no real malware scan; bill images in DB for the demo; no MFA for sales; retention job documented but not scheduled; Neon region must be chosen at deploy (Mumbai preferred).

@@ -41,3 +41,13 @@ Each screen: loading, empty, error states; 360px width; keyboard only; screen re
 
 ## Accessibility / performance checklist
 Contrast script passes; focus visible; `aria-live` on extraction; Lighthouse mobile ≥ 90 Perf/A11y on lead form and status page (record real numbers only).
+
+## Results (2026-11-07)
+- `npm test`: 231 tests pass (unit + integration against a real Postgres `solar_test` database).
+- `lib/rules` coverage: 100% statements/lines/functions, 99% branches (gate 95%).
+- `npm run e2e`: 10 Playwright tests pass on a mobile viewport: lead flow, quote flow (incl. real PDF and IDOR), project flow (incl. revoke), Marathi/Hindi, axe WCAG 2.2 AA at 360px on all core screens, security headers, deny-by-default, logout revocation.
+- Lighthouse: see `docs/LIGHTHOUSE.md` (98/100/100 on the standard mobile profile; the strict 3G performance target is NOT met, with the measured reason).
+- Secret scan (gitleaks) and `npm audit --omit=dev`: clean.
+
+## Running the E2E tests
+`npm run dev` (with a seeded DB and `OTP_IP_LIMIT=1000` in `.env.local`, since the suite signs in many times from one IP), then `npm run e2e`. Screenshots are written to `e2e/shots/` (git-ignored).

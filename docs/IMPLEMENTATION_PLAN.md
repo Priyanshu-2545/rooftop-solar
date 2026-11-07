@@ -17,7 +17,7 @@ Tick items as done. Each task: files, definition of done (DoD).
 - [x] Accept quote + mock advance → project.
 - [x] Project tracker, stage changes, message log, public status page, stuck list.
 - [x] i18n pass MR/HI on scoped screens; manual-entry fallback; extraction edit audit trail.
-- [ ] Design polish: tokens, fonts, sun-arc, microcopy.
+- [x] Design polish: tokens, fonts, sun-arc, microcopy.
 - [ ] UX-laws QA walkthrough (TESTING.md checklist).
 
 ## Day 3 (8 Nov): polish, prove, ship
