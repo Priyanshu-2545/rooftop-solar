@@ -16,7 +16,7 @@ Tick items as done. Each task: files, definition of done (DoD).
 - [x] Quote builder + quote story view + PDF + mock message.
 - [x] Accept quote + mock advance → project.
 - [x] Project tracker, stage changes, message log, public status page, stuck list.
-- [ ] i18n pass MR/HI on scoped screens; manual-entry fallback; extraction edit audit trail.
+- [x] i18n pass MR/HI on scoped screens; manual-entry fallback; extraction edit audit trail.
 - [ ] Design polish: tokens, fonts, sun-arc, microcopy.
 - [ ] UX-laws QA walkthrough (TESTING.md checklist).
 
