@@ -1,15 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Mukta } from "next/font/google";
+import { Mukta } from "next/font/google";
+import localFont from "next/font/local";
 import { Shell } from "@/components/app/Shell";
 import { RegisterSw } from "@/components/app/RegisterSw";
 import { getUser } from "@/lib/auth/current";
 import { getT } from "@/lib/i18n";
 import "./globals.css";
 
-// Two families only. Mukta covers Latin + Devanagari, and next/font serves unicode-range subsets, so the
-// Devanagari file is only downloaded when the page actually contains Devanagari text.
-const display = Fraunces({ subsets: ["latin"], variable: "--font-display", display: "swap", axes: ["opsz"], preload: false });
-const sans = Mukta({ subsets: ["latin", "devanagari"], weight: ["400", "700"], variable: "--font-sans", display: "swap" });
+// Two families only: Fraunces (display, self-hosted subset) + Mukta (UI; Latin + Devanagari).
+// Performance on 3G: Mukta's Devanagari file is only downloaded when Devanagari text is on the page
+// (unicode-range). The language switcher labels use the device font, so English pages never need it.
+// Fraunces, self-hosted: a static instance (weight 400, optical size 72) subset to Basic Latin + the rupee sign
+// and the few punctuation marks we use. 11 KB instead of 61 KB. Licence: assets/fonts/OFL-Fraunces.txt.
+const display = localFont({ src: "../assets/fonts/Fraunces-display-subset.woff2", weight: "400", variable: "--font-display", display: "swap", preload: true });
+const sans = Mukta({ subsets: ["latin", "devanagari"], weight: ["400", "700"], variable: "--font-sans", display: "swap", preload: false });
 
 export const metadata: Metadata = {
   title: { default: "Rooftop solar", template: "%s · Rooftop solar" },

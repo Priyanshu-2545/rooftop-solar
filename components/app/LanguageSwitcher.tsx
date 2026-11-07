@@ -10,7 +10,7 @@ export function LanguageSwitcher({ current }: { current: Locale }) {
       <input type="hidden" name="back" value={back} />
       {LOCALES.map((l) => (
         <button key={l} name="lang" value={l} lang={l} aria-current={l === current ? "true" : undefined}
-          className={`min-h-12 min-w-10 whitespace-nowrap rounded-md px-1.5 text-sm ${l === current ? "font-bold underline underline-offset-4" : "text-muted"}`}>
+          className={`[font-family:system-ui,sans-serif] min-h-12 min-w-10 whitespace-nowrap rounded-md px-1.5 text-sm ${l === current ? "font-bold underline underline-offset-4" : "text-muted"}`}>
           {LOCALE_LABEL[l]}
         </button>
       ))}

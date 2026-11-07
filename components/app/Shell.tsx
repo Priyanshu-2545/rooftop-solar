@@ -26,7 +26,7 @@ export function Shell({ user, t, locale, children }: { user: SessionUser | null;
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:bg-surface focus:p-3">{t("common.skip")}</a>
       <header className="border-b border-hairline">
         <div className={`mx-auto flex items-center justify-between gap-2 px-4 py-2 ${sales ? "max-w-[1100px]" : "max-w-[560px]"}`}>
-          <Link href={sales ? "/leads" : "/"} className="display whitespace-nowrap text-lg font-semibold">{t("common.appName")}</Link>
+          <Link href={sales ? "/leads" : "/"} className="display whitespace-nowrap text-xl">{t("common.appName")}</Link>
           <div className="flex items-center gap-1">
             <LanguageSwitcher current={locale} />
             {user ? (
