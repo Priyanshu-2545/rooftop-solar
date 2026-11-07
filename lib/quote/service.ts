@@ -9,11 +9,12 @@ import { sendToLeadOwner } from "@/lib/messaging/provider";
 import { percentOfPaise } from "@/lib/rules/money";
 import { resolveSettings, type QuoteSettings } from "@/lib/rules/settings";
 import type { SubsidyRule } from "@/lib/rules/subsidy";
-import { computeOption, NoPriceError, type OptionOutput, type PriceRule, type Tier } from "./compute";
+import { computeOption, NoPriceError, type OptionOutput, type PriceRule } from "./compute";
 
 export const QUOTE_VALID_DAYS = 15; // A21
 export const ADVANCE_BP = 1000; // A22: advance = 10% of net cost (mock payment)
-export type Selection = { kw: number; tier: Tier };
+import { ruleIdsOf, type Selection } from "./service-shared";
+export { ruleIdsOf, type Selection };
 
 export interface RuleContext {
   priceRules: PriceRule[];
@@ -29,9 +30,6 @@ export async function loadRuleContext(db: Db, on: Date): Promise<RuleContext> {
 export function buildOptions(ctx: RuleContext, p: { customerType: "residential" | "commercial"; selections: Selection[]; on: Date }): OptionOutput[] {
   return p.selections.map((s) => computeOption({ ...s, customerType: p.customerType, on: p.on, ...ctx }));
 }
-
-export const ruleIdsOf = (options: OptionOutput[]): string[] =>
-  [...new Set(options.flatMap((o) => [o.priceRuleId, o.subsidyRuleId].filter((x): x is string => !!x)))].sort();
 
 export type SaveResult =
   | { ok: true; quoteId: string; sent: boolean }
