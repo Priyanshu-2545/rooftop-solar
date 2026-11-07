@@ -1,0 +1,17 @@
+# Secret-scan config. Extends the default rules; allowlists only things that are provably not secrets.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Build output, deps and the git-ignored local env; plus one fictional test fixture"
+paths = [
+  '''node_modules/''',
+  '''\.next/''',
+  '''coverage/''',
+  '''test-results/''',
+  '''playwright-report/''',
+  '''\.env\.local$''',
+]
+regexes = [
+  '''abcd-1234-efgh''',   # idempotency-key fixture in tests/leads/validate.test.ts
+]
