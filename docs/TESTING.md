@@ -24,20 +24,20 @@ Pyramid: many Vitest unit tests on `lib/rules` and `lib/ai`; integration tests o
 ## Manual QA per screen
 Each screen: loading, empty, error states; 360px width; keyboard only; screen reader labels; offline reload (form draft).
 
-## UX-laws QA checklist (walk through end of Day 2)
-- [ ] Hick: one primary action per screen
-- [ ] Fitts: ≥48px targets, sticky bottom bar
-- [ ] Jakob: OTP boxes, bottom nav
-- [ ] Miller: ≤5 fields/step
-- [ ] Doherty: no blank waits; staged extraction text
-- [ ] Proximity/Common region: bill image + fields together
-- [ ] Hierarchy: quote numerals first, one H1
-- [ ] Disclosure: details behind "How we calculated this"
-- [ ] Von Restorff: only one saffron action per screen
-- [ ] Peak-End: kind low-score and confirmation copy
-- [ ] Goal-gradient: arc progress visible
-- [ ] Postel: +91/spaces/commas/Devanagari digits accepted
-- [ ] Feedback: every action shows confirmation
+## UX-laws QA checklist (walked through 2026-11-07 on the real screens, screenshots in docs/screenshots)
+- [x] Hick: one primary action per screen; stepped form; 3 quote options; 3 collapsed filters
+- [x] Fitts: ≥48px targets (axe + CSS), sticky bottom bar in the form, bill review and accept
+- [x] Jakob: OTP boxes with autofill/paste, bottom nav for homeowners, list/detail for sales
+- [x] Miller: ≤3 fields per lead step (name, owner, roof on step 1); ≤3 homeowner nav items; timeline shows current + next 3
+- [x] Doherty: staged "uploading / reading / checking" text, skeletons on list routes, instant client validation (note: detail routes have no skeleton on purpose, so access errors return a true 404)
+- [x] Proximity/Common region: bill image and values in one region; quote numbers in one surface
+- [x] Hierarchy: quote numerals first, one H1 per screen
+- [x] Disclosure: details behind "How we calculated this"; collapsed timeline
+- [x] Von Restorff: saffron only on the primary action and the sun; stuck projects are the loud list
+- [x] Peak-End: kind low-score copy (EN/MR/HI) and the warm "project has started" confirmation
+- [x] Goal-gradient: sun-arc step progress and project progress
+- [x] Postel: +91/spaces/dashes, "₹3,200", sq m, Devanagari digits (unit tests)
+- [x] Feedback: message preview after a stage change, inline "Saved", loading buttons
 
 ## Accessibility / performance checklist
 Contrast script passes; focus visible; `aria-live` on extraction; Lighthouse mobile ≥ 90 Perf/A11y on lead form and status page (record real numbers only).

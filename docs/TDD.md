@@ -1,8 +1,8 @@
 # Technical Design Document: Rooftop Solar Lead-to-Project App
 
-**GitHub:** {{GITHUB_URL}} (public until review ends)
-**Live app:** {{LIVE_URL}}
-**Demo logins and run instructions:** see `deployment.md` (OTP `123456`, sales admin `9000000001`, homeowner `9000000015`)
+- **GitHub:** {{GITHUB_URL}} (public until review ends)
+- **Live app:** {{LIVE_URL}}
+- **Demo logins and run instructions:** see `deployment.md` (OTP `123456`, sales admin `9000000001`, homeowner `9000000015`)
 
 Client: Company A, Nagpur (rooftop solar, Vidarbha). Built over 6–8 Nov 2026 as a solo candidate build.
 
@@ -196,7 +196,7 @@ The numbered register with where each is used and how to change it is `docs/ASSU
 
 ## 11. What was cut (honestly)
 
-Real WhatsApp/SMS · real payments · real OCR/vision reading and its accuracy evaluation · any DISCOM or government subsidy portal · full offline sync for sales · an admin screen to **edit** price and subsidy rules (a read-only view exists; changes are new dated rows via SQL/seed) · the stuck dashboard as anything more than a list · Marathi/Hindi on sales screens · dark mode · the coordinator and MD roles · native review of the translations · the strict 3G performance target (see section 9).
+Real WhatsApp/SMS · real payments · real OCR/vision reading and its accuracy evaluation · any DISCOM or government subsidy portal · full offline sync for sales · an admin screen to **edit** price and subsidy rules (a read-only view exists; changes are new dated rows via SQL/seed) · the stuck dashboard as anything more than a list · Marathi/Hindi on sales screens · dark mode · the coordinator and MD roles · native review of the translations · the strict 3G performance target (see section 9) · edge cases not handled: a bill with several meters (sales handles it on the call), and editing owner/tenant after the form is submitted (a tenant who is really the owner's representative must ask sales to correct it; sales can already correct the bill values, with an audit trail) · the retention job exists as a script (`npm run retention`, dry-run by default) but is not scheduled.
 
 ## 12. What I would do next
 
