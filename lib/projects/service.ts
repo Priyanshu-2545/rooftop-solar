@@ -99,7 +99,7 @@ export async function revokeStatusToken(db: Db, p: { user: SessionUser; projectI
 }
 
 export type PublicStatus =
-  | { state: "ok"; firstName: string; stageCode: string; stageEnteredAt: Date; timeline: { stageCode: string; at: Date }[]; documentNames: string[] }
+  | { state: "ok"; firstName: string | null; stageCode: string; stageEnteredAt: Date; timeline: { stageCode: string; at: Date }[]; documentNames: string[] }
   | { state: "revoked" }
   | { state: "unknown" };
 
@@ -113,5 +113,5 @@ export async function getPublicStatus(db: Db, token: string): Promise<PublicStat
   if (row.p.tokenRevokedAt) return { state: "revoked" };
   const events = await db.select({ stageCode: projectEvents.stageCode, at: projectEvents.at }).from(projectEvents).where(eq(projectEvents.projectId, row.p.id)).orderBy(asc(projectEvents.at));
   const docs = await db.select({ filename: documents.filename }).from(documents).where(eq(documents.projectId, row.p.id)).orderBy(desc(documents.at));
-  return { state: "ok", firstName: row.name.split(" ")[0], stageCode: row.p.stageCode, stageEnteredAt: row.p.stageEnteredAt, timeline: events, documentNames: docs.map((d) => d.filename) };
+  return { state: "ok", firstName: row.name === "New customer" ? null : row.name.split(" ")[0], stageCode: row.p.stageCode, stageEnteredAt: row.p.stageEnteredAt, timeline: events, documentNames: docs.map((d) => d.filename) };
 }

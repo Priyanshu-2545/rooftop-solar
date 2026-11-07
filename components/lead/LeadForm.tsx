@@ -11,8 +11,8 @@ import { prepareImage } from "@/lib/ui/image-client";
 const TOTAL = 5;
 const DRAFT_KEY = "solar-lead-draft-v1";
 const ROOFS = ["rcc_flat", "sloped_tin", "sloped_tile", "other"] as const;
-type Values = { ownerType: string; roofType: string; roofArea: string; areaUnit: "sqft" | "sqm"; bill: string; pincode: string; consent: boolean };
-const EMPTY: Values = { ownerType: "", roofType: "", roofArea: "", areaUnit: "sqft", bill: "", pincode: "", consent: false };
+type Values = { name: string; ownerType: string; roofType: string; roofArea: string; areaUnit: "sqft" | "sqm"; bill: string; pincode: string; consent: boolean };
+const EMPTY: Values = { name: "", ownerType: "", roofType: "", roofArea: "", areaUnit: "sqft", bill: "", pincode: "", consent: false };
 type Errs = Partial<Record<keyof Values | "photo", MessageKey>>;
 
 function Option({ name, value, checked, onChange, label }: { name: string; value: string; checked: boolean; onChange: () => void; label: string }) {
@@ -121,6 +121,7 @@ export function LeadForm({ messages, demo, samples }: { messages: Record<string,
       }}
     >
       <input type="hidden" name="idempotencyKey" value={key} />
+      <input type="hidden" name="name" value={v.name} />
       <input type="hidden" name="ownerType" value={v.ownerType} />
       <input type="hidden" name="roofType" value={v.roofType} />
       <input type="hidden" name="areaUnit" value={v.areaUnit} />
@@ -138,6 +139,9 @@ export function LeadForm({ messages, demo, samples }: { messages: Record<string,
 
       <section hidden={hide(1)} aria-labelledby="s1">
         <h1 id="s1" className="display mb-6 text-3xl">{t("lead.s1.title")}</h1>
+        <Field id="nameInput" label={t("lead.name")} hint={t("lead.nameHint")}>
+          <TextInput id="nameInput" name="" autoComplete="name" hint maxLength={60} value={v.name} onChange={(e) => set("name", e.target.value)} />
+        </Field>
         <fieldset className="mb-6">
           <legend className="mb-1 font-semibold">{t("lead.ownerType")}</legend>
           <Option name="o" value="owner" checked={v.ownerType === "owner"} onChange={() => set("ownerType", "owner")} label={t("lead.owner")} />

@@ -1,6 +1,8 @@
 const en = {
   "lead.step": "Step {n} of {total}",
   "lead.s1.title": "About your home",
+  "lead.name": "Your name (optional)",
+  "lead.nameHint": "So we can greet you properly.",
   "lead.ownerType": "Do you own the house or rent it?",
   "lead.owner": "I own it",
   "lead.tenant": "I rent it",
@@ -70,6 +72,8 @@ const en = {
 const mr: Record<keyof typeof en, string> = {
   "lead.step": "टप्पा {n} / {total}",
   "lead.s1.title": "तुमच्या घराबद्दल",
+  "lead.name": "तुमचे नाव (ऐच्छिक)",
+  "lead.nameHint": "म्हणजे आम्ही तुम्हाला नीट संबोधू शकू.",
   "lead.ownerType": "घर तुमचे स्वतःचे आहे की भाड्याचे?",
   "lead.owner": "माझे स्वतःचे",
   "lead.tenant": "भाड्याचे",
@@ -139,6 +143,8 @@ const mr: Record<keyof typeof en, string> = {
 const hi: Record<keyof typeof en, string> = {
   "lead.step": "चरण {n} / {total}",
   "lead.s1.title": "आपके घर के बारे में",
+  "lead.name": "आपका नाम (वैकल्पिक)",
+  "lead.nameHint": "ताकि हम आपको ठीक से संबोधित कर सकें।",
   "lead.ownerType": "घर आपका अपना है या किराये का?",
   "lead.owner": "मेरा अपना है",
   "lead.tenant": "किराये का है",

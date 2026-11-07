@@ -36,3 +36,11 @@ describe("parseLeadForm", () => {
     expect(parseLeadForm({ ...good, pincode: "560001" }).ok).toBe(true);
   });
 });
+
+describe("optional name", () => {
+  it("is trimmed and whitespace-collapsed; absent is fine; too long is rejected", () => {
+    expect(parseLeadForm({ ...good, name: "  Asha   Patil " })).toMatchObject({ ok: true, data: { name: "Asha Patil" } });
+    expect(parseLeadForm({ ...good, name: "" })).toMatchObject({ ok: true, data: { name: undefined } });
+    expect(parseLeadForm({ ...good, name: "x".repeat(61) }).ok).toBe(false);
+  });
+});

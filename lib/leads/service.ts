@@ -2,7 +2,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { and, desc, eq, gt, sql } from "drizzle-orm";
 import type { Db } from "@/db/client";
-import { auditLog, billExtractions, billUploads, leads } from "@/db/schema";
+import { auditLog, billExtractions, billUploads, leads, users } from "@/db/schema";
 import { extractBill } from "@/lib/ai";
 import { billExtractionSchema, BILL_FIELDS, type BillExtraction, type BillFieldKey } from "@/lib/ai/schema";
 import { ForbiddenError } from "@/lib/auth/rbac";
@@ -15,6 +15,7 @@ import { inferCustomerType, resolveConfirmation, type Decision, type Typed } fro
 import { CONSENT_TEXT_VERSION, type LeadInput } from "./validate";
 
 export const MAX_UPLOAD_ATTEMPTS = 3;
+export const DEFAULT_NAME = "New customer";
 const DUP_WINDOW_MS = 7 * 86_400_000; // A19
 const BAND_SCORE = { high: 80, medium: 50, low: 20 } as const;
 
@@ -65,6 +66,8 @@ export async function createLead(db: Db, p: { user: SessionUser; input: LeadInpu
         idempotencyKey: input.idempotencyKey, createdAt: now,
       }).returning();
       await storeUpload(db, lead.id, p.original, 1, now);
+      // use the name they gave, but never overwrite a name someone already set
+      if (input.name && user.name === DEFAULT_NAME) await db.update(users).set({ name: input.name }).where(eq(users.id, user.id));
       await db.insert(auditLog).values({ actorUserId: user.id, action: "lead.created", entity: "lead", entityId: lead.id, meta: { humanId: lead.humanId } });
       return { leadId: lead.id, duplicate: false };
     } catch (e) {

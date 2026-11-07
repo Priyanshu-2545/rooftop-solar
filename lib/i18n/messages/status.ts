@@ -1,6 +1,7 @@
 const en = {
   "status.title": "Your solar project",
   "status.hello": "Hello {name}",
+  "status.helloAnon": "Hello",
   "status.where": "Where we are",
   "status.next": "What happens next",
   "status.expected": "This step usually takes about {days} days.",
@@ -26,6 +27,7 @@ const en = {
 const mr: Record<keyof typeof en, string> = {
   "status.title": "तुमचा सोलर प्रकल्प",
   "status.hello": "नमस्कार {name}",
+  "status.helloAnon": "नमस्कार",
   "status.where": "आपण कुठे आहोत",
   "status.next": "पुढे काय होईल",
   "status.expected": "या टप्प्याला साधारणपणे सुमारे {days} दिवस लागतात.",
@@ -51,6 +53,7 @@ const mr: Record<keyof typeof en, string> = {
 const hi: Record<keyof typeof en, string> = {
   "status.title": "आपका सोलर प्रोजेक्ट",
   "status.hello": "नमस्ते {name}",
+  "status.helloAnon": "नमस्ते",
   "status.where": "हम कहां हैं",
   "status.next": "आगे क्या होगा",
   "status.expected": "इस चरण में आमतौर पर लगभग {days} दिन लगते हैं।",

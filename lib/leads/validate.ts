@@ -9,6 +9,7 @@ export const CONSENT_TEXT_VERSION = "v1"; // bump when the consent wording chang
 
 const raw = z
   .object({
+    name: z.string().max(60).optional(),
     ownerType: z.enum(["owner", "tenant"]),
     roofType: z.enum(ROOF_TYPES),
     roofArea: z.string().max(20),
@@ -21,6 +22,7 @@ const raw = z
   .strict(); // reject unknown fields
 
 export type LeadInput = {
+  name?: string;
   ownerType: "owner" | "tenant";
   roofType: (typeof ROOF_TYPES)[number];
   roofAreaSqft: number;
@@ -58,6 +60,7 @@ export function parseLeadForm(input: Record<string, unknown>): { ok: true; data:
   return {
     ok: true,
     data: {
+      name: d.name?.trim().replace(/\s+/g, " ") || undefined,
       ownerType: d.ownerType, roofType: d.roofType, roofAreaSqft: sqft,
       monthlyBillPaise: rupeesToPaiseRounded(billNum), pincode: pin, idempotencyKey: d.idempotencyKey,
     },

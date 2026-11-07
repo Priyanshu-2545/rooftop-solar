@@ -38,7 +38,7 @@ export async function createLeadAction(_prev: LeadFormState, formData: FormData)
   const user = await requireUser();
   if (user.role !== "homeowner") return { server: "lead.err.server" };
   const parsed = parseLeadForm({
-    ownerType: formData.get("ownerType"), roofType: formData.get("roofType"), roofArea: formData.get("roofArea"),
+    name: String(formData.get("name") ?? "") || undefined, ownerType: formData.get("ownerType"), roofType: formData.get("roofType"), roofArea: formData.get("roofArea"),
     areaUnit: formData.get("areaUnit") ?? "sqft", bill: formData.get("bill"), pincode: formData.get("pincode"),
     consent: formData.get("consent") ?? undefined, idempotencyKey: formData.get("idempotencyKey"),
   });

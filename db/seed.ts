@@ -26,6 +26,13 @@ const daysAgo = (n: number) => new Date(NOW.getTime() - n * 86_400_000);
 const T0 = new Date("2024-01-01T00:00:00Z");
 const bytes = (f: string) => readFileSync(`samples/bills/${f}`);
 
+// DEMO-ONLY status-link tokens (fictional data) so reviewers can open /status/<token> without creating one.
+// Real tokens are random and only their hash is stored; these are published on purpose in deployment.md.
+export const DEMO_TOKENS: Record<string, string> = {
+  "LD-30881": "demo-status-prashant-4f9c2a7e5b1d4c68a0e2f7b9d3c1a5e8",
+  "LD-30850": "demo-status-sunita-7a1e3c5d9b2f4e60b8d4a6c2e0f1b3d5",
+};
+
 type LeadSeed = {
   hid: string; name: string; phone: string; owner: "owner" | "tenant"; bill: number; units: number | null;
   area: number; roof: "rcc_flat" | "sloped_tin" | "sloped_tile" | "other"; pin: string; ago: number;
@@ -171,6 +178,7 @@ async function main() {
         await db.insert(s.projects).values({
           id: projectId, humanId: `PJ-${L.hid.slice(3)}`, quoteId, stageCode: L.stage,
           startedAt: sent, stageEnteredAt: daysAgo(L.stageAgo ?? 1),
+          statusTokenHash: DEMO_TOKENS[L.hid] ? createHash("sha256").update(DEMO_TOKENS[L.hid]).digest("hex") : null,
         }).onConflictDoNothing();
         // timeline: one event per stage up to the current one
         const idx = STAGES.findIndex((g) => g.code === L.stage);

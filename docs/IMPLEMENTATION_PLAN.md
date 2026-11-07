@@ -12,10 +12,10 @@ Tick items as done. Each task: files, definition of done (DoD).
 - [x] Lead form (stepped) + upload + `extractBill` simulated + bill review + score + result. DoD: happy path works locally.
 
 ## Day 2 (7 Nov): flows
-- [ ] Sales inbox + lead detail.
-- [ ] Quote builder + quote story view + PDF + mock message.
-- [ ] Accept quote + mock advance → project.
-- [ ] Project tracker, stage changes, message log, public status page, stuck list.
+- [x] Sales inbox + lead detail.
+- [x] Quote builder + quote story view + PDF + mock message.
+- [x] Accept quote + mock advance → project.
+- [x] Project tracker, stage changes, message log, public status page, stuck list.
 - [ ] i18n pass MR/HI on scoped screens; manual-entry fallback; extraction edit audit trail.
 - [ ] Design polish: tokens, fonts, sun-arc, microcopy.
 - [ ] UX-laws QA walkthrough (TESTING.md checklist).
