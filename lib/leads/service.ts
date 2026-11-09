@@ -4,6 +4,8 @@ import { and, desc, eq, gt, sql } from "drizzle-orm";
 import type { Db } from "@/db/client";
 import { auditLog, billExtractions, billUploads, leads, users } from "@/db/schema";
 import { extractBill, getReader } from "@/lib/ai";
+import { SAMPLE_BILL_HASHES } from "@/lib/ai/sample-manifest";
+import { sha256, simulatedReader } from "@/lib/ai/simulated";
 import { billExtractionSchema, BILL_FIELDS, type BillExtraction, type BillFieldKey } from "@/lib/ai/schema";
 import { ForbiddenError } from "@/lib/auth/rbac";
 import type { SessionUser } from "@/lib/auth/session";
@@ -27,7 +29,9 @@ async function nextHumanId(db: Db): Promise<string> {
 async function storeUpload(db: Db, leadId: string, original: Buffer, attemptNo: number, now: Date) {
   const { data, mimeIn } = await checkAndReencode(original);
   // Real AI reads the cleaned, upright, downscaled copy; the simulated reader needs the ORIGINAL bytes (sample-hash mapping).
-  const { reader, backend, timeoutMs } = getReader();
+  // The bundled sample bills always use the free deterministic reader (instant, no API cost, same result every time).
+  const isSample = sha256(original) in SAMPLE_BILL_HASHES;
+  const { reader, backend, timeoutMs } = isSample ? { ...getReader(), reader: simulatedReader, backend: "simulated" } : getReader();
   const real = backend !== "simulated";
   const { extraction } = await extractBill(real ? data : original, real ? "image/jpeg" : mimeIn, reader, timeoutMs);
   const [upload] = await db.insert(billUploads).values({

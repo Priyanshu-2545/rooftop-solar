@@ -112,6 +112,8 @@ Notes for Vercel: functions that read a bill run up to 60 seconds (`maxDuration`
 | `DEMO_OTP` | The fixed 6-digit demo code (only used when `DEMO_MODE=true`) |
 | `APP_ORIGIN` | Public base URL, used in message links (for example `https://your-app.vercel.app`) |
 | `OTP_IP_LIMIT` | Optional. OTP requests per IP per 10 minutes (default 10) |
+| `GEMINI_API_KEY` | Optional, **free tier**. Real AI bill reading with Google Gemini (key from aistudio.google.com/apikey). Used first if set. `GEMINI_MODEL` overrides the model |
+| `AI_PROVIDER` | Optional. `gemini` or `anthropic` to force one when both keys are set |
 | `ANTHROPIC_API_KEY` | Optional. Turns on **real AI bill reading** (Claude vision). Empty = simulated reader |
 | `ANTHROPIC_MODEL` | Optional. Defaults to `claude-sonnet-5-5` |
 | `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` | Optional. Real OTP and stage messages. Ignored while `DEMO_MODE=true` |

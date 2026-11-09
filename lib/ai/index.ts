@@ -3,19 +3,30 @@
 import { flagFields } from "./plausibility";
 import { billExtractionSchema, type BillExtraction, type BillReader } from "./schema";
 import { claudeReader, CLAUDE_TIMEOUT_MS, DEFAULT_MODEL } from "./claude";
+import { DEFAULT_GEMINI_MODEL, GEMINI_TIMEOUT_MS, geminiReader } from "./gemini";
 import { simulatedReader, UNREADABLE } from "./simulated";
 
 const TIMEOUT_MS = 8000; // simulated reader; the real reader brings its own (longer) limit
 
-/** Real Claude vision reader when ANTHROPIC_API_KEY is set, otherwise the deterministic simulated one. */
+/**
+ * Real vision reader, chosen by env. AI_PROVIDER=gemini|anthropic forces one; otherwise Gemini (free tier) if
+ * GEMINI_API_KEY is set, else Claude if ANTHROPIC_API_KEY is set, else the deterministic simulated reader.
+ */
 export function getReader(): { reader: BillReader; backend: string; timeoutMs: number } {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (apiKey) {
+  const gemini = process.env.GEMINI_API_KEY;
+  const claude = process.env.ANTHROPIC_API_KEY;
+  const want = process.env.AI_PROVIDER;
+  if (gemini && want !== "anthropic") {
+    const model = process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL;
+    return { reader: geminiReader({ apiKey: gemini, model }), backend: `gemini:${model}`, timeoutMs: GEMINI_TIMEOUT_MS + 2000 };
+  }
+  if (claude && want !== "gemini") {
     const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
-    return { reader: claudeReader({ apiKey, model }), backend: `claude:${model}`, timeoutMs: CLAUDE_TIMEOUT_MS + 2000 };
+    return { reader: claudeReader({ apiKey: claude, model }), backend: `claude:${model}`, timeoutMs: CLAUDE_TIMEOUT_MS + 2000 };
   }
   return { reader: simulatedReader, backend: "simulated", timeoutMs: TIMEOUT_MS };
 }
+
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 export const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp"] as const;
 
@@ -44,7 +55,9 @@ export async function extractBill(
       return { extraction: { ...UNREADABLE, reason: "The reader returned something we cannot use." }, flags: {}, failed: true };
     }
     return { extraction: parsed.data, flags: flagFields(parsed.data), failed: false };
-  } catch {
+  } catch (e) {
+    // Log only the reason (e.g. "reader http 401"), never the image or any extracted value.
+    console.error("bill reader failed:", e instanceof Error ? e.message : "unknown");
     // API down / timeout: never dead-end, go to manual entry.
     return { extraction: UNREADABLE, flags: {}, failed: true };
   }

@@ -39,3 +39,19 @@ describe("claudeReader (mocked HTTP)", () => {
     expect(out.extraction.photoQuality).toBe("poor");
   });
 });
+
+import { geminiReader } from "@/lib/ai/gemini";
+
+describe("geminiReader (mocked HTTP)", () => {
+  const gem = (text: string, ok = true) => (async () => new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text }] } }] }), { status: ok ? 200 : 429 })) as unknown as typeof fetch;
+  it("parses a JSON reply, including one wrapped in a code fence", async () => {
+    const json = JSON.stringify({ photoQuality: "good", consumerNo: { value: "410012345603", confidence: 0.96 }, tariff: { value: "LT-I Residential", confidence: 0.9 }, sanctionedLoadKw: { value: 2, confidence: 0.9 }, avgUnitsMonth: { value: 85, confidence: 0.95 } });
+    const out = await extractBill(png, "image/png", geminiReader({ apiKey: "k", fetchImpl: gem("```json\n" + json + "\n```") }));
+    expect(out.failed).toBe(false);
+    expect(out.extraction.avgUnitsMonth?.value).toBe(85);
+  });
+  it("rate limit / HTTP error and non-JSON text both fall back to manual entry", async () => {
+    expect((await extractBill(png, "image/png", geminiReader({ apiKey: "k", fetchImpl: gem("{}", false) }))).failed).toBe(true);
+    expect((await extractBill(png, "image/png", geminiReader({ apiKey: "k", fetchImpl: gem("sorry, I can't") }))).failed).toBe(true);
+  });
+});
