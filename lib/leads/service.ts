@@ -3,7 +3,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { and, desc, eq, gt, sql } from "drizzle-orm";
 import type { Db } from "@/db/client";
 import { auditLog, billExtractions, billUploads, leads, users } from "@/db/schema";
-import { extractBill } from "@/lib/ai";
+import { extractBill, getReader } from "@/lib/ai";
 import { billExtractionSchema, BILL_FIELDS, type BillExtraction, type BillFieldKey } from "@/lib/ai/schema";
 import { ForbiddenError } from "@/lib/auth/rbac";
 import type { SessionUser } from "@/lib/auth/session";
@@ -26,7 +26,10 @@ async function nextHumanId(db: Db): Promise<string> {
 
 async function storeUpload(db: Db, leadId: string, original: Buffer, attemptNo: number, now: Date) {
   const { data, mimeIn } = await checkAndReencode(original);
-  const { extraction } = await extractBill(original, mimeIn); // reader sees ORIGINAL bytes (sample-hash mapping)
+  // Real AI reads the cleaned, upright, downscaled copy; the simulated reader needs the ORIGINAL bytes (sample-hash mapping).
+  const { reader, backend, timeoutMs } = getReader();
+  const real = backend !== "simulated";
+  const { extraction } = await extractBill(real ? data : original, real ? "image/jpeg" : mimeIn, reader, timeoutMs);
   const [upload] = await db.insert(billUploads).values({
     leadId, storageKey: randomBytes(24).toString("base64url"), data, mime: "image/jpeg", bytes: data.length,
     sha256: createHash("sha256").update(original).digest("hex"),
@@ -35,7 +38,7 @@ async function storeUpload(db: Db, leadId: string, original: Buffer, attemptNo: 
   }).returning();
   const conf = Object.fromEntries(BILL_FIELDS.flatMap((k) => (extraction[k] ? [[k, extraction[k]!.confidence]] : [])));
   await db.insert(billExtractions).values({
-    uploadId: upload.id, backend: "simulated", rawJson: extraction,
+    uploadId: upload.id, backend, rawJson: extraction,
     consumerNo: extraction.consumerNo?.value ?? null, tariff: extraction.tariff?.value ?? null,
     sanctionedLoadKw: extraction.sanctionedLoadKw ? String(extraction.sanctionedLoadKw.value) : null,
     avgUnitsMonth: extraction.avgUnitsMonth ? Math.round(extraction.avgUnitsMonth.value) : null,

@@ -5,6 +5,7 @@ import { isDemo } from "@/lib/env";
 import { getT, messagesFor } from "@/lib/i18n";
 
 export const metadata = { title: "Get a solar estimate" };
+export const maxDuration = 60; // the form's server action calls the AI bill reader
 
 const SAMPLES = [
   { file: "bill-good-340.png", label: "Clear bill (340 units)" },

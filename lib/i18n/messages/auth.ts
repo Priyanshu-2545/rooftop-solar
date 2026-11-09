@@ -16,6 +16,7 @@ const en = {
   "auth.locked": "Too many wrong tries. Please ask for a new code in a few minutes.",
   "auth.noChallenge": "Please ask for a code first.",
   "auth.rateLimited": "Too many requests. Please wait a few minutes and try again.",
+  "auth.sendFailed": "We could not send the code. Please try again in a minute.",
   "auth.demoHint": "Demo mode: the code is {code}. Demo phones: 9000000011 (homeowner), 9000000001 (sales admin).",
 } as const;
 const mr: Record<keyof typeof en, string> = {
@@ -36,6 +37,7 @@ const mr: Record<keyof typeof en, string> = {
   "auth.locked": "खूप चुकीचे प्रयत्न झाले. कृपया काही मिनिटांनी नवीन कोड मागवा.",
   "auth.noChallenge": "कृपया आधी कोड मागवा.",
   "auth.rateLimited": "खूप विनंत्या झाल्या. कृपया काही मिनिटे थांबा.",
+  "auth.sendFailed": "कोड पाठवता आला नाही. कृपया एका मिनिटाने पुन्हा प्रयत्न करा.",
   "auth.demoHint": "डेमो मोड: कोड {code} आहे. डेमो फोन: 9000000011 (गृहमालक), 9000000001 (सेल्स अॅडमिन).",
 };
 const hi: Record<keyof typeof en, string> = {
@@ -56,6 +58,7 @@ const hi: Record<keyof typeof en, string> = {
   "auth.locked": "बहुत ज़्यादा गलत कोशिशें हुईं। कृपया कुछ मिनट बाद नया कोड मंगवाएं।",
   "auth.noChallenge": "कृपया पहले कोड मंगवाएं।",
   "auth.rateLimited": "बहुत ज़्यादा अनुरोध हुए। कृपया कुछ मिनट रुकें।",
+  "auth.sendFailed": "कोड नहीं भेजा जा सका। कृपया एक मिनट बाद फिर कोशिश करें।",
   "auth.demoHint": "डेमो मोड: कोड {code} है। डेमो फ़ोन: 9000000011 (गृहस्वामी), 9000000001 (सेल्स एडमिन)।",
 };
 export const auth = { en, mr, hi };

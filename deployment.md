@@ -3,7 +3,7 @@
 - **Live app:** {{LIVE_URL}}
 - **Source:** {{GITHUB_URL}} (public until review ends)
 
-All people, phone numbers, consumer numbers and bills in this app are **fictional demo data**. Bill reading, OTP, messages and payments are **mocked** (see the TDD).
+All seeded people, phone numbers, consumer numbers and bills are **fictional demo data**. Payments are always **mocked**. Bill reading, OTP and stage messages are **real when you set the optional keys in section 4**, and **simulated/mocked** when you do not (see `docs/AI.md`).
 
 ## 1. Demo logins (reviewer)
 
@@ -38,19 +38,21 @@ Any other 10-digit number creates a new homeowner account (for trying the lead f
 
 ## 2. Run locally, step by step
 
-Requirements: Node 24+ (22+ works), npm, and a Postgres 14+ database (Docker is easiest).
+Requirements: Node 22+ (24 recommended), npm, and a Postgres 14+ database (Docker is easiest).
+
+> **Windows users:** run everything from **PowerShell** (not WSL). Do not mix the two: `node_modules` contains OS-specific binaries (sharp, lightningcss, esbuild). If you switch, delete `node_modules` and `.next` and run `npm ci` again. If Docker says the port is "forbidden", Windows has reserved it; use another one (this guide uses **5433**).
 
 ```bash
 # 1. dependencies
-npm install
+npm ci
 
 # 2. database (Docker example)
-docker run -d --name solar-pg -e POSTGRES_PASSWORD=localdev -e POSTGRES_DB=solar -p 54329:5432 postgres:16-alpine
+docker run -d --name solar-pg -e POSTGRES_PASSWORD=localdev -e POSTGRES_DB=solar -p 5433:5432 postgres:16-alpine
 docker exec solar-pg psql -U postgres -c "CREATE DATABASE solar_test"   # only needed for the integration tests
 
 # 3. environment: copy the names from .env.example into .env.local and fill them in
 cp .env.example .env.local
-#   DATABASE_URL=postgres://postgres:localdev@localhost:54329/solar
+#   DATABASE_URL=postgres://postgres:localdev@localhost:5433/solar
 #   SESSION_SECRET=<any random string of 32+ characters>
 #   DEMO_MODE=true
 #   DEMO_OTP=123456
@@ -77,6 +79,16 @@ npx playwright install chromium && npm run e2e   # 10 mobile-viewport E2E tests 
 
 Vercel (Next.js, Node runtime) + Neon Postgres.
 
+**Two ways to launch. Pick one, they differ in `DEMO_MODE`:**
+
+| | Review / demo site | Real launch |
+|---|---|---|
+| `DEMO_MODE` | `true` (fixed OTP `123456`, sample-bill dropdown) | `false` |
+| OTP and messages | mocked, nothing is sent | real SMS/WhatsApp (needs the Twilio variables) |
+| Bill reading | simulated unless `ANTHROPIC_API_KEY` is set | set `ANTHROPIC_API_KEY` |
+
+> **Never run `DEMO_MODE=true` on a site with real customers:** anyone could sign in as anyone with the public code. With `DEMO_MODE=false` and no Twilio variables nobody can receive a code, so set them before switching.
+
 1. Create a Neon project (**choose the Mumbai / `aws-ap-south-1` region if offered**: Indian personal data should stay in India; if it is not available, that is a documented limit, see SECURITY.md) and copy its pooled connection string.
 2. Push the repo to GitHub (public) and import it in Vercel (framework: Next.js; no custom build command).
 3. In Vercel → Settings → Environment Variables, add the names below for Production.
@@ -85,7 +97,10 @@ Vercel (Next.js, Node runtime) + Neon Postgres.
    DATABASE_URL="<neon connection string>" npm run db:migrate
    DATABASE_URL="<neon connection string>" npm run db:seed
    ```
-5. Deploy, then sign in on the live URL with the demo logins above.
+5. Deploy, then sign in on the live URL. With `DEMO_MODE=true` use the demo logins above.
+6. For a real launch also: seed only the **rules** you need (do not seed demo people), create your first sales admin user in the database, and verify the subsidy rule on the Rules page (it is marked unverified until you do).
+
+Notes for Vercel: functions that read a bill run up to 60 seconds (`maxDuration`), so use a plan that allows it (Hobby with Fluid compute, or Pro). Uploads are capped at 5 MB (`serverActions.bodySizeLimit` 6 MB). Fonts and sample bills are traced into the bundle by `next.config.ts`.
 
 ## 4. Environment variables (names only; never commit values)
 
@@ -97,9 +112,16 @@ Vercel (Next.js, Node runtime) + Neon Postgres.
 | `DEMO_OTP` | The fixed 6-digit demo code (only used when `DEMO_MODE=true`) |
 | `APP_ORIGIN` | Public base URL, used in message links (for example `https://your-app.vercel.app`) |
 | `OTP_IP_LIMIT` | Optional. OTP requests per IP per 10 minutes (default 10) |
+| `ANTHROPIC_API_KEY` | Optional. Turns on **real AI bill reading** (Claude vision). Empty = simulated reader |
+| `ANTHROPIC_MODEL` | Optional. Defaults to `claude-sonnet-5-5` |
+| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` | Optional. Real OTP and stage messages. Ignored while `DEMO_MODE=true` |
+| `TWILIO_SMS_FROM` | Sender number, or a Messaging Service SID (`MG...`), for SMS/OTP |
+| `TWILIO_WHATSAPP_FROM` | WhatsApp sender, e.g. `whatsapp:+14155238886`. Needs an approved WhatsApp sender and templates |
+
+India: SMS to Indian numbers needs **DLT registration** (sender ID and message template) with your operator, otherwise carriers drop the message. The bill photo (including the consumer number) is sent to the AI provider when `ANTHROPIC_API_KEY` is set: mention this in your privacy notice (DPDP Act 2023).
 
 ## 5. Known limits of this deployment
 
-- OTP, WhatsApp/SMS, payments and bill reading are mocked (swap points: `lib/auth/otp.ts`, `lib/messaging/provider.ts`, `lib/ai/index.ts`).
+- Payments are mocked. OTP/messages and bill reading are real only if you set the keys in section 4 (code: `lib/messaging/sms.ts`, `lib/ai/claude.ts`). Real SMS/WhatsApp and the AI reader were written against the providers' documented APIs and covered by mocked-HTTP tests; test them once with your own keys before launch.
 - Bill images and documents are stored in the database for the demo; production should use private object storage in an India region.
 - The subsidy rule is the client's statement and is **unverified** (shown as such in the app and PDF).

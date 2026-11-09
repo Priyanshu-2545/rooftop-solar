@@ -10,6 +10,7 @@ import { getT, messagesFor } from "@/lib/i18n";
 import { MAX_UPLOAD_ATTEMPTS, readerOutput } from "@/lib/leads/service";
 
 export const metadata = { title: "Check your bill" };
+export const maxDuration = 60; // re-upload runs the AI bill reader
 const SAMPLES = [
   { file: "bill-good-340.png", label: "Clear bill (340 units)" },
   { file: "bill-good-210.png", label: "Clear bill (210 units)" },

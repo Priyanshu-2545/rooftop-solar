@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Hides the "Route / Bundler / Preferences" dev badge in `next dev`. It never shows in production.
+  devIndicators: false,
   // Photos are downscaled client-side when large; server enforces a 5 MB cap on top of this.
   experimental: { serverActions: { bodySizeLimit: "6mb" } },
   serverExternalPackages: ["sharp", "@react-pdf/renderer"],

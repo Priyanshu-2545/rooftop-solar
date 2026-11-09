@@ -4,6 +4,7 @@ import { createHash, randomBytes, randomInt, timingSafeEqual } from "node:crypto
 import { and, desc, eq, isNull } from "drizzle-orm";
 import type { Db } from "@/db/client";
 import { messages, otpChallenges, users } from "@/db/schema";
+import { liveDelivery, sendLive } from "@/lib/messaging/sms";
 import { hit } from "./ratelimit";
 
 export const OTP_TTL_MS = 5 * 60 * 1000;
@@ -15,7 +16,7 @@ const hashCode = (code: string, salt: string) => createHash("sha256").update(`${
 
 export type RequestResult =
   | { ok: true; demoCode?: string }
-  | { ok: false; reason: "rate_limited" };
+  | { ok: false; reason: "rate_limited" | "send_failed" };
 
 export async function requestOtp(
   db: Db,
@@ -31,11 +32,15 @@ export async function requestOtp(
     phone: p.phone, codeHash: hashCode(code, salt), salt,
     expiresAt: new Date(p.now.getTime() + OTP_TTL_MS), ip: p.ip, createdAt: p.now,
   });
-  // Mock delivery: logged to the messages table. The code itself is only stored in the body in demo mode.
+  // Real SMS when Twilio is configured and demo mode is off; otherwise mock (logged only).
+  // The code itself is never stored in the messages table outside demo mode.
+  const live = !p.demo && liveDelivery("sms");
+  const sent = live ? await sendLive("sms", p.phone, `Your Rooftop Solar sign-in code is ${code}. It is valid for 5 minutes. Do not share it.`) : true;
   await db.insert(messages).values({
-    toPhone: p.phone, channel: "sms", template: "otp", lang: "en", status: "mock_sent",
+    toPhone: p.phone, channel: "sms", template: "otp", lang: "en", status: live ? (sent ? "sent" : "failed") : "mock_sent",
     body: p.demo ? `Your sign-in code is ${code}` : "Your sign-in code was sent.",
   });
+  if (!sent) return { ok: false, reason: "send_failed" };
   return { ok: true, demoCode: p.demo ? code : undefined };
 }
 

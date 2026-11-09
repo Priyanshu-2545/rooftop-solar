@@ -203,7 +203,7 @@ export const messages = pgTable("messages", {
   template: text("template").notNull(),
   body: text("body").notNull(),
   lang: text("lang", { enum: ["en", "mr", "hi"] }).notNull(),
-  status: text("status", { enum: ["queued", "mock_sent"] }).notNull(),
+  status: text("status", { enum: ["queued", "mock_sent", "sent", "failed"] }).notNull(),
   createdAt: at("created_at"),
 });
 

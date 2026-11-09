@@ -1,14 +1,18 @@
-// MOCK messaging boundary (A18/5.6). Sending = insert a row with status mock_sent. No real SMS/WhatsApp.
-// To go live: replace the body of `deliver` with a provider call (e.g. a WhatsApp Business API client).
+// Messaging boundary. Every message is logged in `messages`. With Twilio env vars set and DEMO_MODE off it is
+// really sent (status sent/failed); otherwise it is a mock (status mock_sent). See ./sms.ts.
 import { eq } from "drizzle-orm";
 import type { Db } from "@/db/client";
 import { leads, messages, users } from "@/db/schema";
 import { makeT, type Locale, type MessageKey } from "@/lib/i18n/make-t";
+import { liveDelivery, sendLive } from "./sms";
 
 type Channel = "whatsapp" | "sms";
 
 async function deliver(db: Db, m: { toPhone: string; channel: Channel; template: string; body: string; lang: Locale }) {
-  const [row] = await db.insert(messages).values({ ...m, status: "mock_sent" }).returning();
+  // Real send (Twilio) only when configured and not in demo mode; otherwise the mock row below.
+  const live = liveDelivery(m.channel);
+  const status = live ? ((await sendLive(m.channel, m.toPhone, m.body)) ? "sent" : "failed") : "mock_sent";
+  const [row] = await db.insert(messages).values({ ...m, status }).returning();
   return row;
 }
 

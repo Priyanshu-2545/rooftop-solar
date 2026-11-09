@@ -2,7 +2,7 @@
 
 A small, working app for Company A (Nagpur). A homeowner answers a few questions and uploads a bill photo; the app says who is worth a visit and what size fits; sales sends a same-day quote with subsidy and payback worked out; the project is tracked to "subsidy credited" with a customer status link. English, मराठी and हिन्दी.
 
-> **Honest status:** bill reading is **simulated** (a deterministic reader behind an adapter; no external AI), and OTP, messages and payments are **mocked**. The subsidy rule is the client's statement and is **unverified**. See [docs/AI.md](docs/AI.md) and [docs/TDD.md](docs/TDD.md).
+> **Honest status:** bill reading uses **Claude vision when `ANTHROPIC_API_KEY` is set** (otherwise a deterministic simulated reader), OTP and stage messages are **real via Twilio when configured and `DEMO_MODE=false`** (otherwise mocked), and payments are **mocked**. The subsidy rule is the client's statement and is **unverified**. See [docs/AI.md](docs/AI.md) and [docs/TDD.md](docs/TDD.md).
 
 | Lead form | Bill review | Quote story | Project status |
 |---|---|---|---|
